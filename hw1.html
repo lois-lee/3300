@@ -1,0 +1,147 @@
+<html>
+<head>
+<title>CS 3300 homework 1 LL556</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=EB+Garamond|Libre+Franklin|Noto+Sans+JP|Oxygen|PT+Sans|Questrial|Sarabun" rel="stylesheet">
+</head>
+<body>
+  <div class="container larger">
+<h3>
+  <center>
+  CS 3300 | hw1 | Lois Lee | LL556
+<hr>
+</center>
+</h3>
+<!--Problem 1-->
+<p id="p1">
+  <h4>
+  Problem 1
+</h4>
+a) The marks are each region on the map. The channels are the varying colors of each mark.
+  <br>
+b) The marks are the dots/points representing each data point and the channels are the 3 colors each point can
+be and the opacity of the points.
+  <br>
+</p>
+<!--Problem 2-->
+<p id="p2">
+  <h4>
+  Problem 2
+</h4>
+  a) <b>regex;</b> No it is not a valid type.
+    <br>
+  b) <b>string;</b> Yes it is a valid type.
+  <script>
+  console.log(typeof('lois'));
+  </script>
+    <br>
+  c) <b>unicode;</b> No it is not a valid type.
+   <br>
+  d) <b>list;</b> No it is not a valid type.
+  <br>
+  e) <b>map;</b> No it is not a valid type.
+    <br>
+  f) <b>object;</b> Yes it is a valid type.
+  <script>
+  console.log(typeof({x:5}));
+  </script>
+    <br>
+  g) <b>number;</b> Yes it is a valid type.
+  <script>
+  console.log(typeof(4));
+  </script>
+    <br>
+  h) <b>int;</b> No it is not a valid type.
+    <br>
+  i) <b>boolean;</b> Yes it is a valid type.
+  <script>
+  console.log(typeof(true));
+  </script>
+    <br>
+  j) <b>float;</b> No it is not a valid type.
+    <br>
+  k) <b>null;</b> Yes it is a valid type,
+    <br>
+    One interesting thing to note is that when you use <br>
+    console.log(typeof(null)) you actually get an object not null
+    <script>
+    //can set objects equal to null
+    x = null;
+    //but the type returned here will be object
+    console.log(typeof(x));
+    </script>
+      <br>
+  l) <b>function;</b> Yes it is a valid type.
+  <script>
+  //can set objects equal to null
+  function hi(x){
+  x=1+1
+}
+  //but the type returned here will be object
+  console.log(typeof(hi));
+  </script>
+    <br>
+</p>
+<!--Problem 3-->
+<p id="p3">
+  <h4>
+  Problem 3
+</h4>
+a) <b>{ netid: ‘jmr395’ }</b>  <br>
+netid should be in quotes and jmr395 should not have backticks
+<script>
+JSON.parse('{"netid":"jmr395"}')
+</script><br>
+b) <b>{ /* choose one of these options */ "number": "INFO3300/CS3300/INFO5100" }</b>  <br>
+since you want to choose one of the options, you should have an array/list of the options.
+<script>
+JSON.parse('{  "number": ["INFO3300","CS3300","INFO5100"] }')
+</script><br>
+c) <b>[3; 4.3; null]; </b> <br>
+should have commas (,) not semicolons (;)
+<script>
+JSON.parse('[3, 4.3, null]')
+</script><br>
+d) <b>[ { "name": "DDWA", "number": 3300 } { "name": "Java", "number": 2110 } { "name": "Python", "number"; 1110 }</b>  <br>
+should have commas between the }{. Also missing an end bracket ] and the last semicolon should be a colon.
+<script>
+JSON.parse('[{ "name": "DDWA", "number": 3300 }, { "name": "Java", "number": 2110 }, { "name": "Python", "number": 1110 }]')
+</script><br>
+</p>
+<!--Problem 4-->
+<p id="p4">
+  <h4>
+  Problem 4
+</h4>
+I used members of my family and several traits.
+<script>
+{
+  "people in my family" : [{
+    "name": ['Daniel','Lee'],
+    "male": true,
+    "height": 178
+},
+{
+    "name": ['Unju','Lee'],
+    "male": true,
+    "height": 175
+},
+{
+    "name": ['Miyoung','Jeong'],
+    "male": false,
+    "height": 163
+}]
+}
+</script>
+  <br>
+</p>
+<!--Problem 5-->
+<p id="p5">
+  <h4>
+  Problem 5
+</h4>
+  If you don't submit the correct work or any work at all, you will get a 0. No exceptions. But we do get 2 drops.
+</p>
+</div>
+</body>
+</html>
