@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Homework III LL556</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=EB+Garamond|Libre+Franklin|Noto+Sans+JP|Oxygen|PT+Sans|Questrial|Sarabun" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container larger">
+    <h3>
+      <center>
+        CS 3300 | hw3 | Lois Lee | LL556
+        <hr>
+      </center>
+    </h3>
+    <!--Problem 1-->
+    <h4>
+      Problem 1
+    </h4>
+    <ul id="p2">
+      <li id="A">
+        <b>Is this a sequential or a divergent scale?
+          Do you think this an effective color scale? <br> Justify your answer in 1-2 sentences</b>
+        <br>
+        <br>
+        This is a sequential color scale. It depends on exactly how it used, however, in this particular <br>
+        color scale, the color goes from dark to light on the higher end of the spectrum. Usually, higher <br>
+        values would be associated with a darker hue whereas a lighter hue is associated with lower values.
+      </li>
+      <br>
+      <li id="B">
+        <b>Assume that this scale is being used as a scale for a numeric data attribute, with negative<br>
+          values moving towards yellow and positive values moving towards red. Middle values remain<br>
+          blue. Is this an effective color scale for this task? Justify your answer in 1-2 sentences.</b>
+        <br>
+        <br>
+        No this is not an effective color scale because yellow and red are both warmer colors so<br>
+        people would expect the values for yellow and red to be closer than blue is close to yellow or red.
+
+      </li>
+      <br>
+      <li id="C">
+        <b>Besides being rather ugly, this color scale poses serious usability issues for individuals with<br>
+          color vision deficiencies. Use an online color blindness image testing tool to identify and list<br>
+          which color vision deficiencies would render this scale hard to interpret (file included in ZIP).</b>
+        <br>
+        <br>
+        People that have the following would essentially see only one color in this scale:
+        <ul>
+          <i>
+            <li>Red-Blind/Protanopia</li>
+            <li>Green-Blind/Deuteranopia</li>
+            <li>Monochromacy/Achromatopsia</li>
+          </i>
+        </ul>
+        However, even people with <i>Red-Weak/Protanomaly</i> or<i> Green-Weak/Deuteranomaly</i>
+        <br> would find it hard to see subtle range differences within the scale.
+      </li>
+      <br>
+      <li id="D">
+        <b>A data scientist is designing a choropleth map for a new continuous, numeric<br>
+          county-bycounty income data attribute they developed. Would you recommend that they use this<br>
+          (admittedly rather fetching) rainbow scale? Justify your answer in 1-2 sentences.</b>
+        <br>
+        <br>
+      </li>
+    </ul>
+    <hr>
+
+    <!--Problem 2-->
+    <h4>
+      Problem 2
+    </h4>
+    <p id="p2">
+      <div id="svgcontainer"></div>
+      <!-- <svg id="all" height="200" width="300" style="background: #F5F5F5"> -->
+      <script>
+        var width = 300;
+        var height = 200;
+        var svg = d3.select("#svgcontainer")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+        var points = [
+          [10, 9.14],
+          [8, 8.14],
+          [13, 8.74],
+          [9, 8.77],
+          [11, 9.26],
+          [14, 8.1],
+          [6, 6.13],
+          [4, 3.1],
+          [12, 9.13],
+          [7, 7.26],
+          [5, 4.74]
+        ];
+        let xScale = d3.scaleLinear()
+          .domain([0, 15])
+          .range([30, 300]);
+        let yScale = d3.scaleLinear()
+          .domain([0, 10])
+          .range([20, 200]);
+
+
+
+        let horzLineScale = d3.scaleLinear()
+          .domain([0, 10])
+          .range([0, 180]);
+        let vertLineScale = d3.scaleLinear()
+          .domain([0, 15])
+          .range([30, 300]);
+
+
+
+        // var x_axis = d3.axisBottom()
+        //   .scale(xScale);
+        // var y_axis = d3.axisLeft()
+        //   .scale(yScale);
+        //
+        // //Append group and insert axis
+        // svg.append("g")
+        //   .call(x_axis);
+        // svg.append("g")
+        //   .call(y_axis);
+        // line vertical
+        for (var i = 0; i < 16; i++) {
+          svg.append("line")
+            .attr("x1", vertLineScale(i))
+            .attr("x2", vertLineScale(i))
+            .attr("y1", 0)
+            .attr("y2", 180)
+            .style("stroke", "#6C6A6A  ")
+            .style("stroke-width", 1);
+          if (i == 5 || i == 10 || i == 0) {
+            svg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("font-size", "5px")
+              .style("fill", "#A0A0A0 ")
+              .attr("x", vertLineScale(i))
+              .attr("y", 185)
+              .text(i);
+          }
+          if (i == 15) {
+            svg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("font-size", "5px")
+              .style("fill", "#A0A0A0 ")
+              .attr("x", vertLineScale(i) - 3)
+              .attr("y", 185)
+              .text(i);
+          }
+        };
+        // line horizontal
+        for (var i = 0; i < 11; i++) {
+          svg.append("line")
+            .attr("x1", 30)
+            .attr("x2", 300)
+            .attr("y1", horzLineScale(i))
+            .attr("y2", horzLineScale(i))
+            .style("stroke", "#6C6A6A  ")
+            .style("stroke-width", 1);
+          if (i == 5 || i == 0) {
+            svg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("font-size", "5px")
+              .style("fill", "#A0A0A0 ")
+              .attr("x", 20)
+              .attr("y", 180 - horzLineScale(i))
+              .text(i);
+          }
+          if (i == 10) {
+            svg.append("text")
+              .attr("text-anchor", "middle")
+              .attr("font-size", "5px")
+              .style("fill", "#A0A0A0 ")
+              .attr("x", 20)
+              .attr("y", 180 - horzLineScale(i) + 5)
+              .text(i);
+          }
+
+        };
+        for (var i = 0; i < points.length; i++) {
+
+          svg.append("circle")
+            .attr("cx", xScale(points[i][0]))
+            .attr("cy", 200 - yScale(points[i][1]))
+            .attr("r", 3)
+            .style("fill", "#01A8F2")
+            .on("click", function() {
+              d3.select(this).style("fill", "#F24A01  ");
+            })
+        };
+      </script>
+      <!-- </svg> -->
+
+    </p>
+    <hr>
+    <!--Problem 3-->
+    <h4>
+      Problem 3
+    </h4>
+    <p id="p3">
+
+    </p>
+
+</body>
+
+</html>
