@@ -1,0 +1,263 @@
+<html>
+
+<head>
+  <title>Homework IV LL556</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=EB+Garamond|Libre+Franklin|Noto+Sans+JP|Oxygen|PT+Sans|Questrial|Sarabun" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container larger">
+    <h3>
+      <center>
+        CS 3300 | hw4 | Lois Lee | LL556
+        <hr>
+      </center>
+    </h3>
+
+<!-- TO DO:
+
+      add text
+      add <g> elements
+      promise?
+      -->
+    <h4>
+      Problem 1A
+    </h4>
+    <p id="p1A">
+      <!-- A. This data file isn’t exactly perfect. In fact, we’ve gone ahead and added some more points
+      with confusing, missing, or bad data values. Worse, we’ve not bothered fixing any types or
+      standardizing values. Begin by loading the data file using an asynchronous request with
+      d3.json. Implement the rest of this problem in the promise function. Save the data array in a
+      variable blockbustersData that is defined outside the scope of the callback function as a var.
+      Within your promise, use filter and a forEach loop to hide or correct any important data
+      quality issues. For efficiency’s sake, feel free to gather maximum and minimum values at this
+      time as well, or you can use d3.max and d3.min later on in step B. Describe what data issues
+      you found and how you fixed them in your <p> tag. 
+        
+      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then-->
+      
+      Some data issues I noticed were that first off, IMBD ratings go from 1-10 so any 0s must be eliminated<br>
+      also there were a couple of movies with years (2036, 2025) that was past the current year of 2018, <br>
+      which had to be eliminated, as well as many N/A for some fields.
+
+      <br><br>
+
+      I also checked to make sure each rating was either PG, PG-13, R, or G, made sure each length was no <br>
+      longer than 300, and larger than 0, made sure that the imbd rating is between 1-10, and grossing world-<br>
+      wide was larger than 0.
+
+    </p>
+      <svg id="plot1" height="500" width="800" style="background: #fff; margin-top:50px" >
+      </svg>
+    <script>
+
+        let svg = d3.select("svg#plot1");
+        let width = svg.attr("width");
+        let height = svg.attr("height");
+
+
+        var blockbustersData;
+        // colors
+        const color_schema = d3.scaleOrdinal(d3.schemeCategory10); 
+
+        var promise = d3.json('blockbusters.json');
+
+        promise.then(function(data) {
+          data.forEach((d, i) => {
+            
+            d['rank'] = Number(d['rank_in_year']);
+            d['rate'] = (d['rating']);
+            d['name'] = (d['title']);
+            // Fix with replace for commas -- /,/g is a regex for commas
+            d['length'] = Number(d['length']);
+            d['gross'] = Number(d['worldwide_gross'].replace(/,/g, "").replace(/\$/g, ""));
+            d['imbd'] = Number(d['imdb_rating']);
+            d['studio'] = (d['studio']);
+            d['year'] = Number(d['year']);
+            d['genre'] = color_schema(d['Main_Genre']);
+          });
+
+          data = data.filter(d => d['rank'] > 0);
+          data = data.filter(d => d['rate'] == "PG" || d['rate'] == "PG-13" ||d['rate'] == "G"|| d['rate'] == "R");
+          data = data.filter(d => d['length'] > 0 && d['length'] < 300);
+          data = data.filter(d => d['gross'] > 0);
+          data = data.filter(d => d['imbd'] > 0 && d['imbd'] <= 10);
+          data = data.filter(d => d['year'] > 1000 && d['year'] < 2019);
+          blockbustersData = data;
+          console.log('blockbustersData')
+          console.log(blockbustersData)
+
+          let margin = { top: 10, right: 10, bottom: 50, left: 75 };
+          let chart_width = width - margin.left - margin.right; 
+          let chart_height = height - margin.top - margin.bottom;
+
+          const yearMin = d3.min(blockbustersData, d => d['year']);
+          const yearMax = d3.max(blockbustersData, d => d['year']);
+     
+          const yearScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([margin.left+margin.right+margin.right, chart_width+margin.left]);
+
+          const grossMin = d3.min(blockbustersData, d => d['gross']);
+          const grossMax = d3.max(blockbustersData, d => d['gross']);
+          console.log('grossMin')
+          console.log(grossMin)
+          console.log('grossMax')
+          console.log(grossMax)
+          const grossScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([margin.top, chart_height+margin.top]);
+          const xScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([0, chart_width]);
+          const yScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([0, chart_height]);
+
+          // y axis
+          let leftAxis = d3.axisLeft(yScale); 
+          svg.append("g")
+            .attr("class", "y axis") 
+            .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
+            .call(leftAxis);
+
+          // x axis
+          let bottomAxis = d3.axisBottom(xScale); 
+          let element = svg.append("g").attr("class", "x axis")
+            .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height ) + ")");
+          bottomAxis(element); 
+
+          // y gridlines
+          let leftGridlines = d3.axisLeft(yScale).tickSize(-width).tickFormat("");
+          svg.append("g").attr("class", "y gridlines") 
+            .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
+            .call(leftGridlines);
+
+          // x gridlines
+          let bottomGridlines = d3.axisBottom(xScale).tickSize(-chart_height).tickFormat("");
+          element = svg.append("g").attr("class", "x gridlines")
+            .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height) + ")");
+          bottomGridlines(element);
+
+     
+  
+          blockbustersData.forEach(function(element){
+
+            let circ = svg.append("circle")
+              .attr("cx", yearScale(element.year))
+              .attr("cy", grossScale(element.gross))
+              //scaled on imbd rating
+              .attr("r", (element.imbd)/1.4)
+              .style("fill", element.genre)
+              // .on("mouseout", function () {
+              //   d3.select(this)
+              //     .transition().duration(100)
+              //     .attr("r", (element.imbd) / 1.4)
+              //     .style("stroke", "none");
+              //   // Grab label by element ID
+              //   d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
+              // })
+              // .on("mouseover", function () {
+              // console.log(d3.select(this));
+              // d3.select(this)
+              //   .transition().duration(100)
+              //   .attr("r", element.imbd*2)
+              //   .style("stroke", "#000");
+              // })
+              // Add a label
+               circ.on("mouseover", function () {
+              console.log(d3.select(this));
+              d3.select(this)
+                .transition().duration(200)
+                .attr("r", element.imbd * 3)
+              // Add a label
+              svg.append("text")
+                .append("text")
+                .attr("id", element.name.replace(/[ _\-,.:'#!\?]/g, ""))
+                .attr("x", element.year)
+                .attr("y", element.gross - 5)
+                
+                .text("element.name");
+            });
+            circ.on("mouseout", function () {
+              d3.select(this)
+                .transition().duration(200)
+                .attr("r", element.imbd/1.4)
+              // Grab label by element ID
+              d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
+            });
+              
+              });
+
+
+            
+              
+            });
+
+       
+         
+    
+          console.log('blockbustersData')
+          console.log(blockbustersData)
+        
+
+
+
+      
+
+
+    </script>
+
+    <h4>
+      Problem 1B
+    </h4>
+        <p id = "p1B">
+          <!-- B. Create an SVG canvas 800 pixels in width and 500 pixels in height. You are going to be
+          graphing year of release on the x-axis, showing worldwide gross in dollars on the y-axis,
+          creating and varying the radius of circles based on imdb rating, and coloring them by main
+          genre. In this step, please construct scales for your chart. Create <g> elements, use translate
+          to move them to an appropriate place, and populate them with d3.axis labels. Use a second
+          set of d3.axis objects to create corresponding x- and y-axis gridlines in a light color.
+          Feel free to choose whatever margin/padding values, domain, range, log/linear scales,
+          colors, and axis formatting styles you like. Use the <p> tag to explain the choices you made
+          in designing the axes/scales. We will reward scales/axes that are legible, show the
+          distribution of data clearly (or as clearly as possible), use color effectively, and avoid visual
+          clutter. A good rationale in the <p> for your design will outweigh problems in these areas.-->
+      
+          <b>Decision for the padding spaces:</b><br>
+          I used more padding for the left margin so that we could read the labels for the tick marks. I used a slightly smaller<br>
+          but still bigger margin for the right so that the marks for the 2018 movies would not be cut off. The top and bottom <br>
+          did not require the same amount<br><br>
+
+          <b>Decision for the axes scaling:</b><br>
+          I wanted to make the most of the space given to us so as we've learned in class, I gleaned the min and max of the values and <br>
+          used to to scale the axes<br><br>
+
+          <b>Decision for the circle scaling: </b><br>   
+          I wasn't sure if we should use the exact imbd rating as the radius, however when I did so, a lot of marks ended up <br>
+          being covered by others which led me to scale them down linearly by a factor of 1.4.<br>
+          </p>
+
+    <h4>
+      Problem 1C
+    </h4>
+          <p id = "p1C">
+          <!-- C. Create a <g> element and translate it so that it can act as your main chart region. Now,
+          populate the chart with <circle> elements corresponding to valid data points. Move, scale,
+          and color them as necessary using the structures you built in step B.
+           -->
+          </p>
+
+    <h4>
+      Problem 1D
+    </h4>
+          <p id = "p1D">
+          <!--D. Using d3.on(“mouseover”) and d3.on(“mouseout”), provide users a way to move their
+          mouse onto points and see the title of the movie they are hovering over. At minimum, points
+          should grow in size and a floating <text> label should appear nearby when the mouse enters
+          the inside of a circle. Do not use HTML <div> elements; your event actions must happen
+          entirely within SVG canvas elements. When the mouse leaves the circle, it must return to its
+          normal appearance. Feel free to add more complexity to make the highlighting of points
+          more obvious or the text more legible, but this is not explicitly required. Write 2-3 sentences
+          in your <p> tag describing the possible benefits to users from this approach and identifying
+          places in the chart where it may be ineffective or confusing (or, if you fixed them, what you
+          did to improve the user experience). -->
+          </p>
+
+</body>
+
+</html>
