@@ -53,9 +53,9 @@
       </svg>
     <script>
 
-        let svg = d3.select("svg#plot1");
-        let width = svg.attr("width");
-        let height = svg.attr("height");
+        let svg1 = d3.select("svg#plot1");
+        let width = svg1.attr("width");
+        let height = svg1.attr("height");
 
 
         var blockbustersData;
@@ -74,7 +74,6 @@
             d['length'] = Number(d['length']);
             d['gross'] = Number(d['worldwide_gross'].replace(/,/g, "").replace(/\$/g, ""));
             d['imbd'] = Number(d['imdb_rating']);
-            d['studio'] = (d['studio']);
             d['year'] = Number(d['year']);
             d['genre'] = color_schema(d['Main_Genre']);
           });
@@ -96,7 +95,10 @@
           const yearMin = d3.min(blockbustersData, d => d['year']);
           const yearMax = d3.max(blockbustersData, d => d['year']);
      
-          const yearScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([margin.left+margin.right+margin.right, chart_width+margin.left]);
+          const yearScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([0, chart_width]);
+
+          let scatter = svg1.append("g") 
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
           const grossMin = d3.min(blockbustersData, d => d['gross']);
           const grossMax = d3.max(blockbustersData, d => d['gross']);
@@ -110,26 +112,26 @@
 
           // y axis
           let leftAxis = d3.axisLeft(yScale); 
-          svg.append("g")
+          svg1.append("g")
             .attr("class", "y axis") 
             .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
             .call(leftAxis);
 
           // x axis
           let bottomAxis = d3.axisBottom(xScale); 
-          let element = svg.append("g").attr("class", "x axis")
+          let element = svg1.append("g").attr("class", "x axis")
             .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height ) + ")");
           bottomAxis(element); 
 
           // y gridlines
           let leftGridlines = d3.axisLeft(yScale).tickSize(-width).tickFormat("");
-          svg.append("g").attr("class", "y gridlines") 
+          svg1.append("g").attr("class", "y gridlines") 
             .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
             .call(leftGridlines);
 
           // x gridlines
           let bottomGridlines = d3.axisBottom(xScale).tickSize(-chart_height).tickFormat("");
-          element = svg.append("g").attr("class", "x gridlines")
+          element = svg1.append("g").attr("class", "x gridlines")
             .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height) + ")");
           bottomGridlines(element);
 
@@ -137,7 +139,7 @@
   
           blockbustersData.forEach(function(element){
 
-            let circ = svg.append("circle")
+            let circ = scatter.append("circle")
               .attr("cx", yearScale(element.year))
               .attr("cy", grossScale(element.gross))
               //scaled on imbd rating
@@ -159,18 +161,18 @@
               //   .style("stroke", "#000");
               // })
               // Add a label
-               circ.on("mouseover", function () {
+              circ.on("mouseover", function () {
               console.log(d3.select(this));
               d3.select(this)
                 .transition().duration(200)
                 .attr("r", element.imbd * 3)
               // Add a label
-              svg.append("text")
+              scatter.append("text")
                 .append("text")
                 .attr("id", element.name.replace(/[ _\-,.:'#!\?]/g, ""))
                 .attr("x", element.year)
                 .attr("y", element.gross - 5)
-                
+                .style("font-size", "500px")
                 .text("element.name");
             });
             circ.on("mouseout", function () {
@@ -187,18 +189,6 @@
             
               
             });
-
-       
-         
-    
-          console.log('blockbustersData')
-          console.log(blockbustersData)
-        
-
-
-
-      
-
 
     </script>
 
@@ -227,10 +217,7 @@
           I wanted to make the most of the space given to us so as we've learned in class, I gleaned the min and max of the values and <br>
           used to to scale the axes<br><br>
 
-          <b>Decision for the circle scaling: </b><br>   
-          I wasn't sure if we should use the exact imbd rating as the radius, however when I did so, a lot of marks ended up <br>
-          being covered by others which led me to scale them down linearly by a factor of 1.4.<br>
-          </p>
+          
 
     <h4>
       Problem 1C
@@ -240,6 +227,10 @@
           populate the chart with <circle> elements corresponding to valid data points. Move, scale,
           and color them as necessary using the structures you built in step B.
            -->
+          <b>Decision for the circle scaling: </b><br>
+          I wasn't sure if we should use the exact imbd rating as the radius, however when I did so, a lot of marks ended up <br>
+          being covered by others which led me to scale them down linearly by a factor of 1.4.<br>
+          </p>
           </p>
 
     <h4>
@@ -257,6 +248,228 @@
           places in the chart where it may be ineffective or confusing (or, if you fixed them, what you
           did to improve the user experience). -->
           </p>
+          The most obvious benefits is that it provides more information to the user. The user can <br>
+          clearly see the movie title as well as which of the marks corresponds to that title <br>
+          This might be confusing for marks buried under each other, because it may be harder to <br>
+          mouse over those than the ones in front.
+          <h4>
+            Problem 2A
+          </h4>
+          <p id="p2A">
+            <!-- Contextualize the data. Usually we do this with axes and other guides. Here we will show a
+            simplified SVG drawing. Create an SVG canvas 400 pixels high and 400 pixels wide. Choose
+            your pixels such that 5 pixels in both the x and y axes corresponds to 1 meter of distance in
+            the scenario. While an example drawing has been provided at the end of the assignment
+            (you are welcome to copy it into your submission), feel free to make your own drawing of the
+            scenario if you’d like. To make the calculations in the next sections easier, treat the location of
+            the pitcher as (0,0). This makes the top corners of the wall (13,20) and (17,20), and the target
+            area between (25,0) and (35,0). Create linear scales for the x and y dimensions that map
+            meters to pixels. Be careful to make sure that your domains and ranges account for the
+            difference on origin (lower left for problem, upper left for SVG canvas [hint: reverse a range]). -->
+            <svg id= "plot2" height="400" width="400">
+              <g id="background" style="stroke: #000; stroke-width: 2px; fill: none;">
+                <!--- Wall is 13 meters from pitcher. 20 meters tall and 4 meters thick.
+             Target is between 8 meters and 18 meters from the wall. --->
+                <path d="M75 350 H 140 V 250 H 160 V 350 H 350" />
+                <!--- 1 meter is 5px, so our pitcher is at (15,10) from the lower left corner --->
+                <circle id="pitcher" cx="75" cy="350" r="5" style="fill: #EEF" />
+                <!-- Our target is between (40,10) and (50,10) from the lower left --->
+                <rect id="target" x="200" y="350" width="50" height="10" style="fill: #FDD" />
+              </g>
+            </svg>
+            <script>
+              let svg = d3.select("svg#plot2");
+
+              const xScale = d3.scaleLinear().domain([0, 80]).range([0, 400]);
+              const yScale = d3.scaleLinear().domain([0, 80]).range([400, 0]);
+
+
+            //PART B
+              
+              function trajectory(initialVelocity, angle){
+                var myArray = [];
+                var returnType;
+
+                var current_y = 3;
+                var counter = 0;
+                if (counter == 0) {
+                  returnType = {
+                    'ground': 0,
+                    'x': 0,
+                    'y': 0,
+                    'xVelocity': initialVelocity * Math.cos(angle),
+                    'yVelocity': initialVelocity * Math.sin(angle),
+                    'xAcceleration': 0,
+                    'yAcceleration': -3.71 / 10
+                  }
+                  myArray.push(returnType);
+  
+                } 
+                while (current_y > myArray[counter].ground){
+        
+                  
+                      returnType = {
+                        //The x and y positions should be equal to their previous values plus
+                        //0.1 × their current velocities
+                        'ground': 0,
+                        'x': myArray[counter].x + (0.1 * myArray[counter].xVelocity),
+                        'y': myArray[counter].y + (0.1 * (myArray[counter].yVelocity - (3.71 / 10))),
+                        //set velocity in the x and y dimensions equal to the previous velocity plus
+                        //the current acceleration
+                        'xVelocity': myArray[counter].xVelocity,
+                        'yVelocity': myArray[counter].yVelocity - 3.71 / 10,
+                        'xAcceleration': 0,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      counter++;
+                      current_y = myArray[counter].y;
+
+                      if (myArray[counter].x>25 && myArray[counter].x < 35){
+                        myArray[counter].ground = 20;
+                      }
+                      
+
+                    }
+
+                console.log("traj")
+                console.log(myArray)
+                     return myArray;
+                    
+                  }
+
+
+                trajectory(5,45);
+
+
+                // PART E 
+                function trajectoryWithWind(initialVelocity, angle, wind) {
+                  var myArray = [];
+                  var returnType;
+
+                  var current_y = 3;
+                  var counter = 0;
+                    if (counter == 0) {
+                      returnType = {
+                        'ground': 0,
+                        'x': 0,
+                        'y': 0,
+                        'xVelocity': initialVelocity * Math.cos(angle),
+                        'yVelocity': initialVelocity * Math.sin(angle),
+                        'xAcceleration': wind/ 10,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      
+                    }
+                    while (current_y > myArray[counter].ground) {
+                      
+
+                      returnType = {
+                        //The x and y positions should be equal to their previous values plus
+                        //0.1 × their current velocities
+                        'ground': 0,
+                        'x': myArray[counter].x + (0.1 * myArray[counter].xVelocity + wind / 10),
+                        'y': myArray[counter].y + (0.1 * (myArray[counter].yVelocity - (3.71 / 10))),
+                        //set velocity in the x and y dimensions equal to the previous velocity plus
+                        //the current acceleration
+                        'xVelocity': myArray[counter].xVelocity + wind / 10,
+                        'yVelocity': myArray[counter].yVelocity - 3.71 / 10,
+                        'xAcceleration': 0,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      counter++;
+                      current_y = myArray[counter].y;
+
+                      if (myArray[counter].x > 25 && myArray[counter].x < 35) {
+                        myArray[counter].ground = 20;
+                      }
+                      
+
+                    }
+
+                  console.log("withwind")
+                  console.log(myArray)
+                    return myArray;
+
+                  }
+                  trajectoryWithWind(13,80,1);
+
+              function plotTrajectory (someArray, colora){
+                var myArray = []
+                for(var i = 0 ; i < someArray.length ; i++){
+                    var result = {
+                      'x': someArray[i].x,
+                      'y': someArray[i].y
+                    }
+                    myArray.push(result);
+                }
+                var line = d3.svg.line()
+                  .style("opacity", .25)
+                  .style("color", colora)
+                  .style('stroke-width', 5)
+                  .x(function (d) { return xScale(d['x']); })
+                  .y(function (d) { return yScale(d['y']); });
+              }
+            </script>
+            </p>
+
+            <h4>
+              Problem 2B
+            </h4>
+            <p id = "p2B">
+              <!-- B. Generate a data array. Create a function trajectory that takes an initialVelocity in meters
+              per second and an initial angle, returning an array of objects. Each object in this array should
+              have seven variables: ground, x, y, xVelocity, yVelocity, xAcceleration, and yAcceleration.
+              You will need to set the initial conditions (at array index 0) specially: set the initial x velocity to
+              the initial velocity times the cosine of the initial angle, use the sine for the y angle. The
+              acceleration in both dimensions will be constant, and will represent the change in the ball’s
+              speed every tenth of a second. In the x dimension acceleration should be zero. Acceleration
+              in the y dimension should be -3.71 / 10, to account for Mars gravity. For each successive
+              object in the array, set velocity in the x and y dimensions equal to the previous velocity plus
+              the current acceleration. The x and y positions should be equal to their previous values plus
+              0.1 × their current velocities. Finally, to see whether the ball has landed or hit the wall,
+              calculate the current height of the ground by setting the ground variable to either 0 or 20
+              depending on where the x position is located (i.e. the ball is over the wall or not). The array
+              should comprise exactly as many elements as you need to hit the ground (i.e. y <= ground). -->
+
+            </p>
+            <h4>
+              Problem 2C
+            </h4>
+            <p id="p2C">
+              <!-- C. Display data. Create a
+              function plotTrajectory that takes an array of the format created by the function in part B and a string containing a
+              color (e.g. “#abb043”) for the plot. This function should use d3.line() to create a 25% opacity 5-pixel-wide <path>
+              element tracing this trajectory, colored using the provided string. Place a <text> element near the point of
+              impact with a label showing if the ball HIT or MISSed the target, the time it took in flight, and
+              the distance from the take-off point to the landing point (consult Pythagoras and Euclid). -->
+            </p>
+            <h4>
+            Problem 2D
+            </h4>
+            <p id="p2D">
+            <!-- D. Display the trajectory for a toss thrown at 14 meters per second and a 75 degrees angle
+            (this is about 1/3 to 1/2 the speed of an Earthling amateur baseball pitch). Show two
+            additional trajectories with velocities and angles of your choosing. Provide a blue color for
+            the lines for these trajectories. Avoid overlapping text labels. -->
+            </p>
+            h4>
+            Problem 2E
+            </h4>
+            <p id="p2E">
+              <!-- E. Create a second version of trajectory, trajectoryWithWind, that takes an additional
+              parameter: constant acceleration due to wind in m/s/s. Like trajectory, this function will
+              generate an array of objects with 7 properties, but this time accounting for a windy day. The
+              math will work out the same, with the exception that (wind acceleration / 10) becomes x
+              acceleration in the initial conditions before iteration (wind towards the target is positive).
+              Using this new function, calculate a 13 meters per second throw at 80 degrees with a 1m/s/s
+              wind speed towards the target. Use your plot function to draw a new d3.line() for this throw,
+              this time using a red <path> element. There is no need to create a <text> element for this
+              throw, but you are welcome to do so if it will fit on screen -->
+            </p>
+        
 
 </body>
 
