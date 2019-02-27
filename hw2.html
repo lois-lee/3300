@@ -1,10 +1,9 @@
-<!DOCTYPE html>
 <html>
 
 <head>
-  <title>Homework III LL556</title>
-  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <title>Homework IV LL556</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v5.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=EB+Garamond|Libre+Franklin|Noto+Sans+JP|Oxygen|PT+Sans|Questrial|Sarabun" rel="stylesheet">
 </head>
 
@@ -12,200 +11,519 @@
   <div class="container larger">
     <h3>
       <center>
-        CS 3300 | hw3 | Lois Lee | LL556
+        CS 3300 | hw4 | Lois Lee | LL556
         <hr>
       </center>
     </h3>
-    <!--Problem 1-->
+
+<!-- TO DO:
+
+      add text
+      add <g> elements
+      promise?
+      -->
     <h4>
-      Problem 1
+      Problem 1A
     </h4>
-    <ul id="p2">
-      <li id="A">
-        <b>Is this a sequential or a divergent scale?
-          Do you think this an effective color scale? <br> Justify your answer in 1-2 sentences</b>
-        <br>
-        <br>
-        This is a sequential color scale. It depends on exactly how it used, however, in this particular <br>
-        color scale, the color goes from dark to light on the higher end of the spectrum. Usually, higher <br>
-        values would be associated with a darker hue whereas a lighter hue is associated with lower values.
-      </li>
-      <br>
-      <li id="B">
-        <b>Assume that this scale is being used as a scale for a numeric data attribute, with negative<br>
-          values moving towards yellow and positive values moving towards red. Middle values remain<br>
-          blue. Is this an effective color scale for this task? Justify your answer in 1-2 sentences.</b>
-        <br>
-        <br>
-        No this is not an effective color scale because yellow and red are both warmer colors so<br>
-        people would expect the values for yellow and red to be closer than blue is close to yellow or red.
+    <p id="p1A">
+      <!-- A. This data file isn’t exactly perfect. In fact, we’ve gone ahead and added some more points
+      with confusing, missing, or bad data values. Worse, we’ve not bothered fixing any types or
+      standardizing values. Begin by loading the data file using an asynchronous request with
+      d3.json. Implement the rest of this problem in the promise function. Save the data array in a
+      variable blockbustersData that is defined outside the scope of the callback function as a var.
+      Within your promise, use filter and a forEach loop to hide or correct any important data
+      quality issues. For efficiency’s sake, feel free to gather maximum and minimum values at this
+      time as well, or you can use d3.max and d3.min later on in step B. Describe what data issues
+      you found and how you fixed them in your <p> tag. 
+        
+      https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then-->
+      
+      Some data issues I noticed were that first off, IMBD ratings go from 1-10 so any 0s must be eliminated<br>
+      also there were a couple of movies with years (2036, 2025) that was past the current year of 2018, <br>
+      which had to be eliminated, as well as many N/A for some fields.
 
-      </li>
-      <br>
-      <li id="C">
-        <b>Besides being rather ugly, this color scale poses serious usability issues for individuals with<br>
-          color vision deficiencies. Use an online color blindness image testing tool to identify and list<br>
-          which color vision deficiencies would render this scale hard to interpret (file included in ZIP).</b>
-        <br>
-        <br>
-        People that have the following would essentially see only one color in this scale:
-        <ul>
-          <i>
-            <li>Red-Blind/Protanopia</li>
-            <li>Green-Blind/Deuteranopia</li>
-            <li>Monochromacy/Achromatopsia</li>
-          </i>
-        </ul>
-        However, even people with <i>Red-Weak/Protanomaly</i> or<i> Green-Weak/Deuteranomaly</i>
-        <br> would find it hard to see subtle range differences within the scale.
-      </li>
-      <br>
-      <li id="D">
-        <b>A data scientist is designing a choropleth map for a new continuous, numeric<br>
-          county-bycounty income data attribute they developed. Would you recommend that they use this<br>
-          (admittedly rather fetching) rainbow scale? Justify your answer in 1-2 sentences.</b>
-        <br>
-        <br>
-      </li>
-    </ul>
-    <hr>
+      <br><br>
 
-    <!--Problem 2-->
-    <h4>
-      Problem 2
-    </h4>
-    <p id="p2">
-      <div id="svgcontainer"></div>
-      <!-- <svg id="all" height="200" width="300" style="background: #F5F5F5"> -->
-      <script>
-        var width = 300;
-        var height = 200;
-        var svg = d3.select("#svgcontainer")
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height);
-
-        var points = [
-          [10, 9.14],
-          [8, 8.14],
-          [13, 8.74],
-          [9, 8.77],
-          [11, 9.26],
-          [14, 8.1],
-          [6, 6.13],
-          [4, 3.1],
-          [12, 9.13],
-          [7, 7.26],
-          [5, 4.74]
-        ];
-        let xScale = d3.scaleLinear()
-          .domain([0, 15])
-          .range([30, 300]);
-        let yScale = d3.scaleLinear()
-          .domain([0, 10])
-          .range([20, 200]);
-
-
-
-        let horzLineScale = d3.scaleLinear()
-          .domain([0, 10])
-          .range([0, 180]);
-        let vertLineScale = d3.scaleLinear()
-          .domain([0, 15])
-          .range([30, 300]);
-
-
-
-        // var x_axis = d3.axisBottom()
-        //   .scale(xScale);
-        // var y_axis = d3.axisLeft()
-        //   .scale(yScale);
-        //
-        // //Append group and insert axis
-        // svg.append("g")
-        //   .call(x_axis);
-        // svg.append("g")
-        //   .call(y_axis);
-        // line vertical
-        for (var i = 0; i < 16; i++) {
-          svg.append("line")
-            .attr("x1", vertLineScale(i))
-            .attr("x2", vertLineScale(i))
-            .attr("y1", 0)
-            .attr("y2", 180)
-            .style("stroke", "#6C6A6A  ")
-            .style("stroke-width", 1);
-          if (i == 5 || i == 10 || i == 0) {
-            svg.append("text")
-              .attr("text-anchor", "middle")
-              .attr("font-size", "5px")
-              .style("fill", "#A0A0A0 ")
-              .attr("x", vertLineScale(i))
-              .attr("y", 185)
-              .text(i);
-          }
-          if (i == 15) {
-            svg.append("text")
-              .attr("text-anchor", "middle")
-              .attr("font-size", "5px")
-              .style("fill", "#A0A0A0 ")
-              .attr("x", vertLineScale(i) - 3)
-              .attr("y", 185)
-              .text(i);
-          }
-        };
-        // line horizontal
-        for (var i = 0; i < 11; i++) {
-          svg.append("line")
-            .attr("x1", 30)
-            .attr("x2", 300)
-            .attr("y1", horzLineScale(i))
-            .attr("y2", horzLineScale(i))
-            .style("stroke", "#6C6A6A  ")
-            .style("stroke-width", 1);
-          if (i == 5 || i == 0) {
-            svg.append("text")
-              .attr("text-anchor", "middle")
-              .attr("font-size", "5px")
-              .style("fill", "#A0A0A0 ")
-              .attr("x", 20)
-              .attr("y", 180 - horzLineScale(i))
-              .text(i);
-          }
-          if (i == 10) {
-            svg.append("text")
-              .attr("text-anchor", "middle")
-              .attr("font-size", "5px")
-              .style("fill", "#A0A0A0 ")
-              .attr("x", 20)
-              .attr("y", 180 - horzLineScale(i) + 5)
-              .text(i);
-          }
-
-        };
-        for (var i = 0; i < points.length; i++) {
-
-          svg.append("circle")
-            .attr("cx", xScale(points[i][0]))
-            .attr("cy", 200 - yScale(points[i][1]))
-            .attr("r", 3)
-            .style("fill", "#01A8F2")
-            .on("click", function() {
-              d3.select(this).style("fill", "#F24A01  ");
-            })
-        };
-      </script>
-      <!-- </svg> -->
+      I also checked to make sure each rating was either PG, PG-13, R, or G, made sure each length was no <br>
+      longer than 300, and larger than 0, made sure that the imbd rating is between 1-10, and grossing world-<br>
+      wide was larger than 0.
 
     </p>
-    <hr>
-    <!--Problem 3-->
-    <h4>
-      Problem 3
-    </h4>
-    <p id="p3">
+      <svg id="plot1" height="500" width="800" style="background: #fff; margin-top:50px" >
+      </svg>
+    <script>
 
-    </p>
+        let svg1 = d3.select("svg#plot1");
+        let width = svg1.attr("width");
+        let height = svg1.attr("height");
+
+
+        var blockbustersData;
+        // colors
+        const color_schema = d3.scaleOrdinal(d3.schemeCategory10); 
+
+        var promise = d3.json('blockbusters.json');
+
+        promise.then(function(data) {
+          data.forEach((d, i) => {
+            
+            d['rank'] = Number(d['rank_in_year']);
+            d['rate'] = (d['rating']);
+            d['name'] = (d['title']);
+            // Fix with replace for commas -- /,/g is a regex for commas
+            d['length'] = Number(d['length']);
+            d['gross'] = Number(d['worldwide_gross'].replace(/,/g, "").replace(/\$/g, ""));
+            d['imbd'] = Number(d['imdb_rating']);
+            d['year'] = Number(d['year']);
+            d['genre'] = color_schema(d['Main_Genre']);
+          });
+
+          data = data.filter(d => d['rank'] > 0);
+          data = data.filter(d => d['rate'] == "PG" || d['rate'] == "PG-13" ||d['rate'] == "G"|| d['rate'] == "R");
+          data = data.filter(d => d['length'] > 0 && d['length'] < 300);
+          data = data.filter(d => d['gross'] > 0);
+          data = data.filter(d => d['imbd'] > 0 && d['imbd'] <= 10);
+          data = data.filter(d => d['year'] > 1000 && d['year'] < 2019);
+          blockbustersData = data;
+          console.log('blockbustersData')
+          console.log(blockbustersData)
+
+          let margin = { top: 10, right: 10, bottom: 50, left: 75 };
+          let chart_width = width - margin.left - margin.right; 
+          let chart_height = height - margin.top - margin.bottom;
+
+          const yearMin = d3.min(blockbustersData, d => d['year']);
+          const yearMax = d3.max(blockbustersData, d => d['year']);
+     
+          const yearScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([0, chart_width]);
+
+          let region = svg1.append("g") 
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          const grossMin = d3.min(blockbustersData, d => d['gross']);
+          const grossMax = d3.max(blockbustersData, d => d['gross']);
+          console.log('grossMin')
+          console.log(grossMin)
+          console.log('grossMax')
+          console.log(grossMax)
+          const grossScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([margin.top, chart_height+margin.top]);
+          const xScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([0, chart_width]);
+          const yScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([0, chart_height]);
+
+          // y axis
+          let leftAxis = d3.axisLeft(yScale); 
+          svg1.append("g")
+            .attr("class", "y axis") 
+            .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
+            .call(leftAxis);
+
+          // x axis
+          let bottomAxis = d3.axisBottom(xScale); 
+          let element = svg1.append("g").attr("class", "x axis")
+            .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height ) + ")");
+          bottomAxis(element); 
+
+          // y gridlines
+          let leftGridlines = d3.axisLeft(yScale).tickSize(-width).tickFormat("");
+          svg1.append("g").attr("class", "y gridlines") 
+            .attr("transform", "translate(" + (margin.left ) + "," + margin.top + ")")
+            .call(leftGridlines);
+
+          // x gridlines
+          let bottomGridlines = d3.axisBottom(xScale).tickSize(-chart_height).tickFormat("");
+          element = svg1.append("g").attr("class", "x gridlines")
+            .attr("transform", "translate(" + margin.left + "," + (margin.top + chart_height) + ")");
+          bottomGridlines(element);
+
+     
+  
+          blockbustersData.forEach(function(element){
+
+            let circ = region.append("circle")
+              .attr("cx", yearScale(element.year))
+              .attr("cy", grossScale(element.gross))
+              //scaled on imbd rating
+              .attr("r", (element.imbd)/1.4)
+              .style("fill", element.genre)
+              // .on("mouseout", function () {
+              //   d3.select(this)
+              //     .transition().duration(100)
+              //     .attr("r", (element.imbd) / 1.4)
+              //     .style("stroke", "none");
+              //   // Grab label by element ID
+              //   d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
+              // })
+              // .on("mouseover", function () {
+              // console.log(d3.select(this));
+              // d3.select(this)
+              //   .transition().duration(100)
+              //   .attr("r", element.imbd*2)
+              //   .style("stroke", "#000");
+              // })
+              // Add a label
+              circ.on("mouseover", function () {
+              console.log(d3.select(this));
+              d3.select(this)
+                .transition().duration(200)
+                .attr("r", element.imbd * 3)
+              // Add a label
+              region.append("text")
+                .append("text")
+                .attr("id", element.name.replace(/[ _\-,.:'#!\?]/g, ""))
+                .attr("x", element.year)
+                .attr("y", element.gross - 5)
+                .style("font-size", "500px")
+                .text("element.name");
+            });
+            circ.on("mouseout", function () {
+              d3.select(this)
+                .transition().duration(200)
+                .attr("r", element.imbd/1.4)
+              // Grab label by element ID
+              d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
+            });
+              
+              });
+
+
+            
+              
+            });
+
+    </script>
+
+    <h4>
+      Problem 1B
+    </h4>
+        <p id = "p1B">
+          <!-- B. Create an SVG canvas 800 pixels in width and 500 pixels in height. You are going to be
+          graphing year of release on the x-axis, showing worldwide gross in dollars on the y-axis,
+          creating and varying the radius of circles based on imdb rating, and coloring them by main
+          genre. In this step, please construct scales for your chart. Create <g> elements, use translate
+          to move them to an appropriate place, and populate them with d3.axis labels. Use a second
+          set of d3.axis objects to create corresponding x- and y-axis gridlines in a light color.
+          Feel free to choose whatever margin/padding values, domain, range, log/linear scales,
+          colors, and axis formatting styles you like. Use the <p> tag to explain the choices you made
+          in designing the axes/scales. We will reward scales/axes that are legible, show the
+          distribution of data clearly (or as clearly as possible), use color effectively, and avoid visual
+          clutter. A good rationale in the <p> for your design will outweigh problems in these areas.-->
+      
+          <b>Decision for the padding spaces:</b><br>
+          I used more padding for the left margin so that we could read the labels for the tick marks. I used a slightly smaller<br>
+          but still bigger margin for the right so that the marks for the 2018 movies would not be cut off. The top and bottom <br>
+          did not require the same amount<br><br>
+
+          <b>Decision for the axes scaling:</b><br>
+          I wanted to make the most of the space given to us so as we've learned in class, I gleaned the min and max of the values and <br>
+          used to to scale the axes<br><br>
+
+          
+
+    <h4>
+      Problem 1C
+    </h4>
+          <p id = "p1C">
+          <!-- C. Create a <g> element and translate it so that it can act as your main chart region. Now,
+          populate the chart with <circle> elements corresponding to valid data points. Move, scale,
+          and color them as necessary using the structures you built in step B.
+           -->
+          <b>Decision for the circle scaling: </b><br>
+          I wasn't sure if we should use the exact imbd rating as the radius, however when I did so, a lot of marks ended up <br>
+          being covered by others which led me to scale them down linearly by a factor of 1.4.<br>
+          </p>
+          </p>
+
+    <h4>
+      Problem 1D
+    </h4>
+          <p id = "p1D">
+          <!--D. Using d3.on(“mouseover”) and d3.on(“mouseout”), provide users a way to move their
+          mouse onto points and see the title of the movie they are hovering over. At minimum, points
+          should grow in size and a floating <text> label should appear nearby when the mouse enters
+          the inside of a circle. Do not use HTML <div> elements; your event actions must happen
+          entirely within SVG canvas elements. When the mouse leaves the circle, it must return to its
+          normal appearance. Feel free to add more complexity to make the highlighting of points
+          more obvious or the text more legible, but this is not explicitly required. Write 2-3 sentences
+          in your <p> tag describing the possible benefits to users from this approach and identifying
+          places in the chart where it may be ineffective or confusing (or, if you fixed them, what you
+          did to improve the user experience). -->
+          </p>
+          The most obvious benefits is that it provides more information to the user. The user can <br>
+          clearly see the movie title as well as which of the marks corresponds to that title <br>
+          This might be confusing for marks buried under each other, because it may be harder to <br>
+          mouse over those than the ones in front.
+          <h4>
+            Problem 2A
+          </h4>
+          <p id="p2A">
+            <!-- Contextualize the data. Usually we do this with axes and other guides. Here we will show a
+            simplified SVG drawing. Create an SVG canvas 400 pixels high and 400 pixels wide. Choose
+            your pixels such that 5 pixels in both the x and y axes corresponds to 1 meter of distance in
+            the scenario. While an example drawing has been provided at the end of the assignment
+            (you are welcome to copy it into your submission), feel free to make your own drawing of the
+            scenario if you’d like. To make the calculations in the next sections easier, treat the location of
+            the pitcher as (0,0). This makes the top corners of the wall (13,20) and (17,20), and the target
+            area between (25,0) and (35,0). Create linear scales for the x and y dimensions that map
+            meters to pixels. Be careful to make sure that your domains and ranges account for the
+            difference on origin (lower left for problem, upper left for SVG canvas [hint: reverse a range]). -->
+            <svg id= "plot2" height="400" width="400">
+              <g id="background" style="stroke: #000; stroke-width: 2px; fill: none;">
+                <!--- Wall is 13 meters from pitcher. 20 meters tall and 4 meters thick.
+             Target is between 8 meters and 18 meters from the wall. --->
+                <path d="M75 350 H 140 V 250 H 160 V 350 H 350" />
+                <!--- 1 meter is 5px, so our pitcher is at (15,10) from the lower left corner --->
+                <circle id="pitcher" cx="75" cy="350" r="5" style="fill: #EEF" />
+                <!-- Our target is between (40,10) and (50,10) from the lower left --->
+                <rect id="target" x="200" y="350" width="50" height="10" style="fill: #FDD" />
+              </g>
+            </svg>
+            <script>
+              let svg = d3.select("svg#plot2")
+                .append("svg")
+                .attr("width", 400)
+                .attr("height", 400);
+
+              const xScale = d3.scaleLinear().domain([0, 80]).range([0, 400]);
+              const yScale = d3.scaleLinear().domain([0, 80]).range([400, 0]);
+
+
+            //PART B
+              
+              function trajectory(initialVelocity, angle){
+                var myArray = [];
+                var returnType;
+                var current_y = 3;
+                var counter = 0;
+
+                if (counter == 0) {
+                  returnType = {
+                    'ground': 0,
+                    'x': 0,
+                    'y': 0,
+                    'xVelocity': initialVelocity * Math.cos(angle),
+                    'yVelocity': initialVelocity * Math.sin(angle),
+                    'xAcceleration': 0,
+                    'yAcceleration': -3.71 / 10
+                  }
+                  myArray.push(returnType);
+  
+                } 
+                while (current_y > myArray[counter].ground){
+        
+                  
+                      returnType = {
+                        //The x and y positions should be equal to their previous values plus
+                        //0.1 × their current velocities
+                        'ground': 0,
+                        'x': myArray[counter].x + (0.1 * myArray[counter].xVelocity),
+                        'y': myArray[counter].y + (0.1 * (myArray[counter].yVelocity - (3.71 / 10))),
+                        //set velocity in the x and y dimensions equal to the previous velocity plus
+                        //the current acceleration
+                        'xVelocity': myArray[counter].xVelocity,
+                        'yVelocity': myArray[counter].yVelocity - 3.71 / 10,
+                        'xAcceleration': 0,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      counter++;
+                      current_y = myArray[counter].y;
+
+                      if (myArray[counter].x>13 && myArray[counter].x < 17){
+                        myArray[counter].ground = 20;
+                      }
+                      
+
+                    }
+
+                console.log("traj")
+                console.log(myArray)
+                     return myArray;
+                    
+                  }
+
+
+                trajectory(15,1);
+
+
+                // PART E 
+                function trajectoryWithWind(initialVelocity, angle, wind) {
+                  var myArray = [];
+                  var returnType;
+
+                  var current_y = 3;
+                  var counter = 0;
+                    if (counter == 0) {
+                      returnType = {
+                        'ground': 0,
+                        'x': 0,
+                        'y': 0,
+                        'xVelocity': initialVelocity * Math.cos(angle),
+                        'yVelocity': initialVelocity * Math.sin(angle),
+                        'xAcceleration': wind/ 10,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      
+                    }
+                    while (current_y > myArray[counter].ground) {
+                      
+
+                      returnType = {
+                        //The x and y positions should be equal to their previous values plus
+                        //0.1 × their current velocities
+                        'ground': 0,
+                        'x': myArray[counter].x + (0.1 * myArray[counter].xVelocity + wind / 10),
+                        'y': myArray[counter].y + (0.1 * (myArray[counter].yVelocity - (3.71 / 10))),
+                        //set velocity in the x and y dimensions equal to the previous velocity plus
+                        //the current acceleration
+                        'xVelocity': myArray[counter].xVelocity + wind / 10,
+                        'yVelocity': myArray[counter].yVelocity - 3.71 / 10,
+                        'xAcceleration': 0,
+                        'yAcceleration': -3.71 / 10
+                      }
+                      myArray.push(returnType);
+                      counter++;
+                      current_y = myArray[counter].y;
+
+                      if (myArray[counter].x > 13 && myArray[counter].x < 17) {
+                        myArray[counter].ground = 20;
+                      }
+                      
+
+                    }
+
+                  console.log("withwind")
+                  console.log(myArray)
+                    return myArray;
+
+                  }
+                  trajectoryWithWind(13,1,1);
+
+              //PART C
+              function plotTrajectory (someArray, colora){
+                var myArray = []
+                for(var i = 0 ; i < someArray.length ; i++){
+                    var result = {
+                      'x':someArray[i].x+15,
+                      'y':someArray[i].y+10
+                    };
+                    myArray.push(result);
+                }
+                var distance = Math.sqrt(Math.pow((myArray[myArray.length - 1].x - 0), 2) + Math.pow((myArray[myArray.length - 1].y - 0), 2));
+                
+                if (myArray[myArray.length - 1].x -15 > 25 && myArray[myArray.length - 1].x-15 <35){
+                  svg.append("text")
+                    .style("fill", "#A0A0A0 ")
+                    .style("font-size", "6px")
+                    .attr("text-anchor", "right")
+                    .attr("x", myArray[myArray.length - 1].x+150)
+                    .attr("y", 400 - myArray[myArray.length - 1].y -55)
+                    .text("HIT, time: " + Math.round(myArray.length * 100) / 1000+ ", distance: " + Math.round((distance-15) * 100) / 100);
+                }else{
+                  svg.append("text")
+                    .style("fill", "#A0A0A0 ")
+                    .style("font-size", "6px")
+                    .attr("text-anchor", "middle")
+                    .attr("x", myArray[myArray.length - 1].x +150)
+                    .attr("y", 400 - myArray[myArray.length - 1].y - 65)
+                    .text("MISS, time: "+ Math.round(myArray.length * 100) / 1000 + ", distance: " + Math.round((distance-15)* 100) / 100);
+                }
+              
+
+                var line = d3.line()
+                   .x((d, i) => xScale(d.x))
+                   .y((d, i) => yScale(d.y));
+                  
+                  
+                svg.append('path')
+                  .datum(myArray)
+                  .attr("d", line)
+                  .attr("opacity", .25)
+                  .attr("fill", "none")
+                  .attr('stroke', colora)
+                  .attr('stroke-width', 5);
+              }
+
+              plotTrajectory(trajectory(14, 1.309), "blue");
+              plotTrajectory(trajectory(13, 1), "blue");
+              plotTrajectory(trajectory(13, 0.3), "blue");
+              
+
+              function plotTrajectory_d(someArray){
+                var myArray = []
+                for (var i = 0; i < someArray.length; i++) {
+                  var result = {
+                    'x': someArray[i].x + 15,
+                    'y': someArray[i].y + 10
+                  };
+                  myArray.push(result);
+
+                }
+                 var line = d3.line()
+                  .x((d, i) => xScale(d.x))
+                  .y((d, i) => yScale(d.y));
+
+
+                svg.append('path')
+                  .datum(myArray)
+                  .attr("d", line)
+                  .attr("opacity", .25)
+                  .attr("fill", "none")
+                  .attr('stroke', "red")
+                  .attr('stroke-width', 5);
+
+              }
+              plotTrajectory_d(trajectoryWithWind(13, 1.39626, 1));
+            </script>
+            </p>
+
+            
+            <p id = "p2B">
+              <!-- B. Generate a data array. Create a function trajectory that takes an initialVelocity in meters
+              per second and an initial angle, returning an array of objects. Each object in this array should
+              have seven variables: ground, x, y, xVelocity, yVelocity, xAcceleration, and yAcceleration.
+              You will need to set the initial conditions (at array index 0) specially: set the initial x velocity to
+              the initial velocity times the cosine of the initial angle, use the sine for the y angle. The
+              acceleration in both dimensions will be constant, and will represent the change in the ball’s
+              speed every tenth of a second. In the x dimension acceleration should be zero. Acceleration
+              in the y dimension should be -3.71 / 10, to account for Mars gravity. For each successive
+              object in the array, set velocity in the x and y dimensions equal to the previous velocity plus
+              the current acceleration. The x and y positions should be equal to their previous values plus
+              0.1 × their current velocities. Finally, to see whether the ball has landed or hit the wall,
+              calculate the current height of the ground by setting the ground variable to either 0 or 20
+              depending on where the x position is located (i.e. the ball is over the wall or not). The array
+              should comprise exactly as many elements as you need to hit the ground (i.e. y <= ground). -->
+
+            </p>
+         
+            <p id="p2C">
+              <!-- C. Display data. Create a
+              function plotTrajectory that takes an array of the format created by the function in part B and a string containing a
+              color (e.g. “#abb043”) for the plot. This function should use d3.line() to create a 25% opacity 5-pixel-wide <path>
+              element tracing this trajectory, colored using the provided string. Place a <text> element near the point of
+              impact with a label showing if the ball HIT or MISSed the target, the time it took in flight, and
+              the distance from the take-off point to the landing point (consult Pythagoras and Euclid). -->
+            </p>
+          
+            <p id="p2D">
+            <!-- D. Display the trajectory for a toss thrown at 14 meters per second and a 75 degrees angle
+            (this is about 1/3 to 1/2 the speed of an Earthling amateur baseball pitch). Show two
+            additional trajectories with velocities and angles of your choosing. Provide a blue color for
+            the lines for these trajectories. Avoid overlapping text labels. -->
+            </p>
+          
+            <p id="p2E">
+              <!-- E. Create a second version of trajectory, trajectoryWithWind, that takes an additional
+              parameter: constant acceleration due to wind in m/s/s. Like trajectory, this function will
+              generate an array of objects with 7 properties, but this time accounting for a windy day. The
+              math will work out the same, with the exception that (wind acceleration / 10) becomes x
+              acceleration in the initial conditions before iteration (wind towards the target is positive).
+              Using this new function, calculate a 13 meters per second throw at 80 degrees with a 1m/s/s
+              wind speed towards the target. Use your plot function to draw a new d3.line() for this throw,
+              this time using a red <path> element. There is no need to create a <text> element for this
+              throw, but you are welcome to do so if it will fit on screen -->
+            </p>
+        
 
 </body>
 
