@@ -106,9 +106,9 @@
           console.log(grossMin)
           console.log('grossMax')
           console.log(grossMax)
-          const grossScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([margin.top, chart_height+margin.top]);
+          const grossScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([margin.top, chart_height]);
           const xScale = d3.scaleLinear().domain([yearMin + 1, yearMax]).range([0, chart_width]);
-          const yScale = d3.scaleLinear().domain([grossMax + 1, grossMin]).range([0, chart_height]);
+          const yScale = d3.scaleLog().domain([grossMax + 1, grossMin]).range([0, chart_height]);
 
           // y axis
           let leftAxis = d3.axisLeft(yScale); 
@@ -145,42 +145,31 @@
               //scaled on imbd rating
               .attr("r", (element.imbd)/1.4)
               .style("fill", element.genre)
-              // .on("mouseout", function () {
-              //   d3.select(this)
-              //     .transition().duration(100)
-              //     .attr("r", (element.imbd) / 1.4)
-              //     .style("stroke", "none");
-              //   // Grab label by element ID
-              //   d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
-              // })
-              // .on("mouseover", function () {
-              // console.log(d3.select(this));
-              // d3.select(this)
-              //   .transition().duration(100)
-              //   .attr("r", element.imbd*2)
-              //   .style("stroke", "#000");
-              // })
-              // Add a label
+        
               circ.on("mouseover", function () {
               console.log(d3.select(this));
               d3.select(this)
                 .transition().duration(200)
                 .attr("r", element.imbd * 3)
               // Add a label
+
               region.append("text")
-                .append("text")
-                .attr("id", element.name.replace(/[ _\-,.:'#!\?]/g, ""))
-                .attr("x", element.year)
-                .attr("y", element.gross - 5)
-                .style("font-size", "500px")
-                .text("element.name");
+          
+                .attr("id", element.name.replace(/[ _\-,.:'#!0-9\?]/g, "poo"))
+                .attr("x", yearScale(element.year - 15))
+                .attr("y", grossScale(element.gross - 15))
+                .style("font-size", "20px")
+                .style("fill", "black")
+                .text(element.name);
+                console.log("dkjahfdbjkhbf")
             });
             circ.on("mouseout", function () {
               d3.select(this)
                 .transition().duration(200)
                 .attr("r", element.imbd/1.4)
               // Grab label by element ID
-              d3.select("#" + element.name.replace(/[ _\-,.:'#!\?]/g, "")).remove();
+              d3.select("#" + element.name.replace(/[ _\-,.:'#!0-9\?]/g, "poo")).remove()
+            
             });
               
               });
@@ -253,7 +242,7 @@
           This might be confusing for marks buried under each other, because it may be harder to <br>
           mouse over those than the ones in front.
           <h4>
-            Problem 2A
+            Problem 2
           </h4>
           <p id="p2A">
             <!-- Contextualize the data. Usually we do this with axes and other guides. Here we will show a
